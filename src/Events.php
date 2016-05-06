@@ -34,7 +34,7 @@ final class Events
 
     final public function has(string $name): bool
     {
-        return isset($this->data[$this->normalizeName($name)]);
+        return isset($this->stack[$this->normalizeName($name)]);
     }
 
     final public function fire(string $name, ...$funcArgs)
