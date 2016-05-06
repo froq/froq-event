@@ -3,34 +3,50 @@ namespace Froq\Event;
 
 use Froq\Collection\Collection;
 
-final class Events extends Collection
+final class Events
 {
-    final public function on(string $name, callable $func, array $funcArgs = null): self
+    private $stack = [];
+
+    public function setStack(array $stack): self
+    {
+        $this->stack = $stack;
+        return $this;
+    }
+
+    public function getStack(): array
+    {
+        return $this->stack;
+    }
+
+    final public function on(string $name,
+        callable $func, array $funcArgs = null, bool $once = true): self
     {
         $name = $this->normalizeName($name);
-        $this->set($name, new Event($name, $func, $funcArgs));
+        $this->stack[$name] = new Event($name, $func, $funcArgs, $once);
         return $this;
     }
 
     final public function off(string $name): self
     {
-        $this->del($this->normalizeName($name));
+        unset($this->stack[$this->normalizeName($name)]);
         return $this;
     }
 
     final public function has(string $name): bool
     {
-        return $this->offsetExists($this->normalizeName($name));
+        return isset($this->data[$this->normalizeName($name)]);
     }
 
     final public function fire(string $name, ...$funcArgs)
     {
         $name = $this->normalizeName($name);
-        $event = $this->get($name);
-        if ($event) {
-            $func = $event->getFunc();
-            $funcArgs = array_merge($event->getFuncArgs(), $funcArgs);
-            return call_user_func_array($func, $funcArgs);
+        if (isset($this->stack[$name])) {
+            $event = $this->stack[$name];
+            if ($even->isOnce()) {
+                $this->off($name);
+            }
+            return call_user_func_array(
+                $event->getFunc(), array_merge($event->getFuncArgs(), $funcArgs));
         }
     }
 
