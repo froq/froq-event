@@ -14,9 +14,13 @@ final class Events extends Collection
 
     final public function off(string $name): self
     {
-        $name = $this->normalizeName($name);
-        $this->del($name);
+        $this->del($this->normalizeName($name));
         return $this;
+    }
+
+    final public function has(string $name): bool
+    {
+        return $this->offsetExists($this->normalizeName($name));
     }
 
     final public function fire(string $name, ...$funcArgs)
