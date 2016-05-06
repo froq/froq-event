@@ -26,7 +26,7 @@ final class Events extends Collection
         if ($event) {
             $func = $event->getFunc();
             $funcArgs = array_merge($event->getFuncArgs(), $funcArgs);
-            return call_user_func_array($func, $funcArgs());
+            return call_user_func_array($func, $funcArgs);
         }
     }
 
