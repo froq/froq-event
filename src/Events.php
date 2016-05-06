@@ -19,12 +19,14 @@ final class Events extends Collection
         return $this;
     }
 
-    final public function fire(string $name)
+    final public function fire(string $name, ...$funcArgs)
     {
         $name = $this->normalizeName($name);
         $event = $this->get($name);
         if ($event) {
-            return call_user_func_array($event->getFunc(), $event->getFuncArgs());
+            $func = $event->getFunc();
+            $funcArgs = array_merge($event->getFuncArgs(), $funcArgs);
+            return call_user_func_array($func, $funcArgs());
         }
     }
 
