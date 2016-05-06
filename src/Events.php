@@ -42,7 +42,7 @@ final class Events
         $name = $this->normalizeName($name);
         if (isset($this->stack[$name])) {
             $event = $this->stack[$name];
-            if ($even->isOnce()) {
+            if ($event->isOnce()) {
                 $this->off($name);
             }
             return call_user_func_array(
