@@ -6,8 +6,10 @@ final class Event
     private $name;
     private $func;
     private $funcArgs = [];
+    private $once = true;
 
-    final public function __construct(string $name, callable $func = null, array $funcArgs = null)
+    final public function __construct(string $name, callable
+        $func = null, array $funcArgs = null, bool $once = true)
     {
         $this->name = $name;
         if ($func) {
@@ -16,6 +18,7 @@ final class Event
         if ($funcArgs) {
             $this->setFuncArgs($funcArgs);
         }
+        $this->once = $once;
     }
 
     final public function setName(string $name): self
@@ -46,5 +49,19 @@ final class Event
     final public function getFuncArgs(): array
     {
         return $this->funcArgs;
+    }
+
+    final public function setOnce(bool $once): self
+    {
+        $this->once = $once;
+        return $this;
+    }
+    final public function getOnce(): bool
+    {
+        return $this->once;
+    }
+    final public function isOnce(): bool
+    {
+        return ($this->once == true);
     }
 }
