@@ -26,7 +26,7 @@ namespace Froq\Event;
 /**
  * @package    Froq
  * @subpackage Froq\Event
- * @object     Froq\Event\EventException
+ * @object     Froq\Event\Event
  * @author     Kerem Güneş <k-gun@mail.com>
  */
 final class Event
