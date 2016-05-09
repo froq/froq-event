@@ -81,6 +81,7 @@ final class Events
         callable $func, array $funcArgs = null, bool $once = true): self
     {
         $name = $this->normalizeName($name);
+
         $this->stack[$name] = new Event($name, $func, $funcArgs, $once);
 
         return $this;
