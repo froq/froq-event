@@ -53,7 +53,13 @@ final class Events
      */
     final public function setStack(array $stack): self
     {
-        $this->stack = $stack;
+        foreach ($stack as $event) {
+            if (!$event instanceof Event) {
+                throw new EventException('Stack elements must be instanceof Froq\Event\Event object');
+            }
+
+            $this->stack[$this->normalizeName($event->getName())] = $event;
+        }
 
         return $this;
     }
