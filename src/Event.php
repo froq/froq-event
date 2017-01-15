@@ -41,13 +41,13 @@ final class Event
      * Function.
      * @var callable
      */
-    private $func;
+    private $function;
 
     /**
      * Function arguments.
      * @var array
      */
-    private $funcArgs = [];
+    private $functionArguments = [];
 
     /**
      * Once.
@@ -58,17 +58,17 @@ final class Event
     /**
      * Constructor.
      * @param string        $name
-     * @param callable|null $func
-     * @param array|null    $funcArgs
+     * @param callable|null $function
+     * @param array|null    $functionArguments
      * @param bool          $once
      */
     final public function __construct(string $name,
-        callable $func = null, array $funcArgs = null, bool $once = true)
+        callable $function = null, array $functionArguments = null, bool $once = true)
     {
         $this->name = $name;
 
-        if ($func) $this->setFunc($func);
-        if ($funcArgs) $this->setFuncArgs($funcArgs);
+        if ($function) $this->setFunction($function);
+        if ($functionArguments) $this->setFunctionArguments($functionArguments);
 
         $this->once = $once;
     }
@@ -95,45 +95,45 @@ final class Event
     }
 
     /**
-     * Set func.
-     * @param  callable $func
+     * Set function.
+     * @param  callable $function
      * @return self
      */
-    final public function setFunc(callable $func): self
+    final public function setFunction(callable $function): self
     {
-        $this->func = $func;
+        $this->func = $function;
 
         return $this;
     }
 
     /**
-     * Get func.
+     * Get function.
      * @return callable
      */
-    final public function getFunc(): callable
+    final public function getFunction(): callable
     {
         return $this->func;
     }
 
     /**
-     * Set func args.
-     * @param  array $funcArgs
+     * Set function arguments.
+     * @param  array $functionArguments
      * @return self
      */
-    final public function setFuncArgs(array $funcArgs): self
+    final public function setFunctionArguments(array $functionArguments): self
     {
-        $this->funcArgs = $funcArgs;
+        $this->functionArguments = $functionArguments;
 
         return $this;
     }
 
     /**
-     * Get func args.
-     * @return callable
+     * Get function arguments.
+     * @return array
      */
-    final public function getFuncArgs(): array
+    final public function getFunctionArguments(): array
     {
-        return $this->funcArgs;
+        return $this->functionArguments;
     }
 
     /**

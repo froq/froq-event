@@ -70,17 +70,17 @@ final class Events
     /**
      * On.
      * @param  string     $name
-     * @param  callable   $func
-     * @param  array|null $funcArgs
+     * @param  callable   $function
+     * @param  array|null $functionArguments
      * @param  bool       $once
      * @return self
      */
-    final public function on(string $name,
-        callable $func, array $funcArgs = null, bool $once = true): self
+    final public function on(string $name, callable $function, array $functionArguments = null,
+        bool $once = true): self
     {
         $name = $this->normalizeName($name);
 
-        $this->stack[$name] = new Event($name, $func, $funcArgs, $once);
+        $this->stack[$name] = new Event($name, $function, $functionArguments, $once);
 
         return $this;
     }
@@ -110,22 +110,24 @@ final class Events
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $funcArgs
+     * @param  ...    $functionArguments
      * @return any
      */
-    final public function fire(string $name, ...$funcArgs)
+    final public function fire(string $name, ...$functionArguments)
     {
         $name = $this->normalizeName($name);
         if (isset($this->stack[$name])) {
             $event = $this->stack[$name];
+
             // remove if once
             if ($event->isOnce()) {
                 $this->off($name);
             }
 
+            $function = $even->getFunction();
+            $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
 
-
-            return call_user_func_array($event->getFunc(), array_merge($event->getFuncArgs(), $funcArgs));
+            return call_user_func_array($function, $functionArguments);
         }
     }
 
