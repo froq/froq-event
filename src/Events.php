@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace Froq\Event;
 
-use Froq\Collection\Collection;
-
 /**
  * @package    Froq
  * @subpackage Froq\Event
@@ -41,11 +39,11 @@ final class Events
 
     /**
      * Constructor.
-     * @param array $stack
+     * @param array|null $stack
      */
-    final public function __construct(array $stack = [])
+    final public function __construct(array $stack = null)
     {
-        $this->setStack($stack);
+        $stack && $this->setStack($stack);
     }
 
     /**
