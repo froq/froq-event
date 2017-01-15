@@ -62,8 +62,8 @@ final class Event
      * @param array|null    $functionArguments
      * @param bool          $once
      */
-    final public function __construct(string $name,
-        callable $function = null, array $functionArguments = null, bool $once = true)
+    final public function __construct(string $name, callable $function = null, array $functionArguments = null,
+        bool $once = true)
     {
         $this->name = $name;
 
