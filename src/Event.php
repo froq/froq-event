@@ -57,18 +57,20 @@ final class Event
 
     /**
      * Constructor.
-     * @param string        $name
-     * @param callable|null $function
-     * @param array|null    $functionArguments
-     * @param bool          $once
+     * @param string     $name
+     * @param callable   $function
+     * @param array|null $functionArguments
+     * @param bool       $once
      */
-    final public function __construct(string $name, callable $function = null, array $functionArguments = null,
+    final public function __construct(string $name, callable $function, array $functionArguments = null,
         bool $once = true)
     {
         $this->name = $name;
+        $this->function = $function;
 
-        if ($function) $this->setFunction($function);
-        if ($functionArguments) $this->setFunctionArguments($functionArguments);
+        if ($functionArguments) {
+            $this->setFunctionArguments($functionArguments);
+        }
 
         $this->once = $once;
     }
