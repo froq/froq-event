@@ -68,7 +68,7 @@ final class Events
     }
 
     /**
-     * On (add event).
+     * On.
      * @param  string     $name
      * @param  callable   $func
      * @param  array|null $funcArgs
@@ -86,7 +86,7 @@ final class Events
     }
 
     /**
-     * Off (remove event).
+     * Off.
      * @param  string $name
      * @return self
      */
@@ -98,7 +98,7 @@ final class Events
     }
 
     /**
-     * Has (check event).
+     * Has.
      * @param  string $name
      * @return bool
      */
@@ -108,10 +108,10 @@ final class Events
     }
 
     /**
-     * Fire (call event).
+     * Fire.
      * @param  string $name
      * @param  ...    $funcArgs
-     * @return any|null
+     * @return any
      */
     final public function fire(string $name, ...$funcArgs)
     {
@@ -123,8 +123,9 @@ final class Events
                 $this->off($name);
             }
 
-            return call_user_func_array(
-                $event->getFunc(), array_merge($event->getFuncArgs(), $funcArgs));
+
+
+            return call_user_func_array($event->getFunc(), array_merge($event->getFuncArgs(), $funcArgs));
         }
     }
 
