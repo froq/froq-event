@@ -165,6 +165,6 @@ final class Event
      */
     final public function isOnce(): bool
     {
-        return $this->once;
+        return ($this->once === true);
     }
 }
