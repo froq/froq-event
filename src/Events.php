@@ -41,7 +41,7 @@ final class Events
      * Constructor.
      * @param array $stack
      */
-    public final function __construct(array $stack = [])
+    public function __construct(array $stack = [])
     {
         $this->setStack($stack);
     }
@@ -51,7 +51,7 @@ final class Events
      * @param  array $stack
      * @return self
      */
-    public final function setStack(array $stack): self
+    public function setStack(array $stack): self
     {
         // reset
         $this->stack = [];
@@ -71,7 +71,7 @@ final class Events
      * Get stack.
      * @return array
      */
-    public final function getStack(): array
+    public function getStack(): array
     {
         return $this->stack;
     }
@@ -84,7 +84,7 @@ final class Events
      * @param  bool       $once
      * @return self
      */
-    public final function on(string $name, callable $function, array $functionArguments = null,
+    public function on(string $name, callable $function, array $functionArguments = null,
         bool $once = true): self
     {
         $name = $this->normalizeName($name);
@@ -99,7 +99,7 @@ final class Events
      * @param  string $name
      * @return self
      */
-    public final function off(string $name): self
+    public function off(string $name): self
     {
         unset($this->stack[$this->normalizeName($name)]);
 
@@ -111,7 +111,7 @@ final class Events
      * @param  string $name
      * @return bool
      */
-    public final function has(string $name): bool
+    public function has(string $name): bool
     {
         return isset($this->stack[$this->normalizeName($name)]);
     }
@@ -119,10 +119,10 @@ final class Events
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $functionArguments   Runtime arguments if given.
+     * @param  ...    $functionArguments Runtime arguments if given.
      * @return any
      */
-    public final function fire(string $name, ...$functionArguments)
+    public function fire(string $name, ...$functionArguments)
     {
         $name = $this->normalizeName($name);
         if (isset($this->stack[$name])) {
@@ -145,7 +145,7 @@ final class Events
      * @param  string $name
      * @return string
      */
-    final private function normalizeName(string $name): string
+    private function normalizeName(string $name): string
     {
         return strtolower($name);
     }

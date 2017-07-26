@@ -62,7 +62,7 @@ final class Event
      * @param array|null $functionArguments
      * @param bool       $once
      */
-    public final function __construct(string $name, callable $function, array $functionArguments = null,
+    public function __construct(string $name, callable $function, array $functionArguments = null,
         bool $once = true)
     {
         $this->name = $name;
@@ -80,7 +80,7 @@ final class Event
      * @param  string $name
      * @return self
      */
-    public final function setName(string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -91,7 +91,7 @@ final class Event
      * Get name.
      * @return string
      */
-    public final function getName(): string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -101,7 +101,7 @@ final class Event
      * @param  callable $function
      * @return self
      */
-    public final function setFunction(callable $function): self
+    public function setFunction(callable $function): self
     {
         $this->function = $function;
 
@@ -112,7 +112,7 @@ final class Event
      * Get function.
      * @return callable
      */
-    public final function getFunction(): callable
+    public function getFunction(): callable
     {
         return $this->function;
     }
@@ -122,7 +122,7 @@ final class Event
      * @param  array $functionArguments
      * @return self
      */
-    public final function setFunctionArguments(array $functionArguments): self
+    public function setFunctionArguments(array $functionArguments): self
     {
         $this->functionArguments = $functionArguments;
 
@@ -133,7 +133,7 @@ final class Event
      * Get function arguments.
      * @return array
      */
-    public final function getFunctionArguments(): array
+    public function getFunctionArguments(): array
     {
         return $this->functionArguments;
     }
@@ -143,7 +143,7 @@ final class Event
      * @param  bool $once
      * @return self
      */
-    public final function setOnce(bool $once): self
+    public function setOnce(bool $once): self
     {
         $this->once = $once;
 
@@ -154,7 +154,7 @@ final class Event
      * Get once.
      * @return bool
      */
-    public final function getOnce(): bool
+    public function getOnce(): bool
     {
         return $this->once;
     }
@@ -163,7 +163,7 @@ final class Event
      * Is once.
      * @return bool
      */
-    public final function isOnce(): bool
+    public function isOnce(): bool
     {
         return $this->once === true;
     }
