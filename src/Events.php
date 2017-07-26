@@ -39,11 +39,11 @@ final class Events
 
     /**
      * Constructor.
-     * @param array|null $stack
+     * @param array $stack
      */
-    final public function __construct(array $stack = null)
+    public final function __construct(array $stack = [])
     {
-        $stack && $this->setStack($stack);
+        $this->setStack($stack);
     }
 
     /**
@@ -51,11 +51,14 @@ final class Events
      * @param  array $stack
      * @return self
      */
-    final public function setStack(array $stack): self
+    public final function setStack(array $stack): self
     {
+        // reset
+        $this->stack = [];
+
         foreach ($stack as $event) {
             if (!$event instanceof Event) {
-                throw new EventException('Stack elements must be instanceof Froq\Event\Event object');
+                throw new EventException('Stack elements must be instanceof Froq\Event\Event object!');
             }
 
             $this->stack[$this->normalizeName($event->getName())] = $event;
@@ -68,7 +71,7 @@ final class Events
      * Get stack.
      * @return array
      */
-    final public function getStack(): array
+    public final function getStack(): array
     {
         return $this->stack;
     }
@@ -81,7 +84,7 @@ final class Events
      * @param  bool       $once
      * @return self
      */
-    final public function on(string $name, callable $function, array $functionArguments = null,
+    public final function on(string $name, callable $function, array $functionArguments = null,
         bool $once = true): self
     {
         $name = $this->normalizeName($name);
@@ -96,7 +99,7 @@ final class Events
      * @param  string $name
      * @return self
      */
-    final public function off(string $name): self
+    public final function off(string $name): self
     {
         unset($this->stack[$this->normalizeName($name)]);
 
@@ -108,7 +111,7 @@ final class Events
      * @param  string $name
      * @return bool
      */
-    final public function has(string $name): bool
+    public final function has(string $name): bool
     {
         return isset($this->stack[$this->normalizeName($name)]);
     }
@@ -116,10 +119,10 @@ final class Events
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $functionArguments
+     * @param  ...    $functionArguments   Runtime arguments if given.
      * @return any
      */
-    final public function fire(string $name, ...$functionArguments)
+    public final function fire(string $name, ...$functionArguments)
     {
         $name = $this->normalizeName($name);
         if (isset($this->stack[$name])) {
