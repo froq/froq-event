@@ -133,7 +133,7 @@ final class Events
                 $this->off($name);
             }
 
-            $function = $even->getFunction();
+            $function = $event->getFunction();
             $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
 
             return call_user_func_array($function, $functionArguments);
