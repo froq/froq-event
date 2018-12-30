@@ -62,7 +62,7 @@ final class Events
 
         foreach ($stack as $event) {
             if (!$event instanceof Event) {
-                throw new EventException('Stack elements must be instanceof Froq\Event\Event object!');
+                throw new EventException('Stack elements must be instanceof Froq\Event\Event object');
             }
 
             $this->stack[$this->normalizeName($event->getName())] = $event;
