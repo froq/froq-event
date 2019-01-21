@@ -31,6 +31,7 @@ namespace Froq\Event;
  * @subpackage Froq\Event
  * @object     Froq\Event\Events
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class Events
 {

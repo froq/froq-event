@@ -31,6 +31,7 @@ namespace Froq\Event;
  * @subpackage Froq\Event
  * @object     Froq\Event\EventException
  * @author     Kerem Güneş <k-gun@mail.com>
+ * @since      1.0
  */
 final class EventException extends \Exception
 {}
