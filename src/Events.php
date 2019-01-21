@@ -53,10 +53,10 @@ final class Events
     /**
      * Set stack.
      * @param  array $stack
-     * @return self
+     * @return void
      * @throws Froq\EventException
      */
-    public function setStack(array $stack): self
+    public function setStack(array $stack): void
     {
         // reset
         $this->stack = [];
@@ -68,8 +68,6 @@ final class Events
 
             $this->stack[$this->normalizeName($event->getName())] = $event;
         }
-
-        return $this;
     }
 
     /**
@@ -87,28 +85,24 @@ final class Events
      * @param  callable   $function
      * @param  array|null $functionArguments
      * @param  bool       $once
-     * @return self
+     * @return void
      */
     public function on(string $name, callable $function, array $functionArguments = null,
-        bool $once = true): self
+        bool $once = true): void
     {
         $name = $this->normalizeName($name);
 
         $this->stack[$name] = new Event($name, $function, $functionArguments, $once);
-
-        return $this;
     }
 
     /**
      * Off.
      * @param  string $name
-     * @return self
+     * @return void
      */
-    public function off(string $name): self
+    public function off(string $name): void
     {
         unset($this->stack[$this->normalizeName($name)]);
-
-        return $this;
     }
 
     /**
