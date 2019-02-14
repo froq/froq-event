@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Event;
+namespace froq\event;
 
 /**
- * @package    Froq
- * @subpackage Froq\Event
- * @object     Froq\Event\EventException
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Event Exception.
+ * @package froq\event
+ * @object  froq\event\EventException
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class EventException extends \Exception
 {}

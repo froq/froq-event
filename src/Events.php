@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Event;
+namespace froq\event;
 
 /**
- * @package    Froq
- * @subpackage Froq\Event
- * @object     Froq\Event\Events
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Events.
+ * @package froq\event
+ * @object  froq\event\Events
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class Events
 {
@@ -54,7 +54,7 @@ final class Events
      * Set stack.
      * @param  array $stack
      * @return void
-     * @throws Froq\EventException
+     * @throws froq\eventException
      */
     public function setStack(array $stack): void
     {
@@ -63,7 +63,7 @@ final class Events
 
         foreach ($stack as $event) {
             if (!$event instanceof Event) {
-                throw new EventException('Stack elements must be instanceof Froq\Event\Event object');
+                throw new EventException('Stack elements must be instanceof froq\event\Event object');
             }
 
             $this->stack[$this->normalizeName($event->getName())] = $event;

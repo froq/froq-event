@@ -24,14 +24,14 @@
  */
 declare(strict_types=1);
 
-namespace Froq\Event;
+namespace froq\event;
 
 /**
- * @package    Froq
- * @subpackage Froq\Event
- * @object     Froq\Event\Event
- * @author     Kerem Güneş <k-gun@mail.com>
- * @since      1.0
+ * Event.
+ * @package froq\event
+ * @object  froq\event\Event
+ * @author  Kerem Güneş <k-gun@mail.com>
+ * @since   1.0
  */
 final class Event
 {
