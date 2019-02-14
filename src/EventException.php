@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace froq\event;
 
 /**
- * Event Exception.
+ * Event exception.
  * @package froq\event
  * @object  froq\event\EventException
  * @author  Kerem Güneş <k-gun@mail.com>
