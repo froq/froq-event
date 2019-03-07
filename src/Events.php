@@ -119,9 +119,9 @@ final class Events
      * Fire.
      * @param  string $name
      * @param  ...    $functionArguments Runtime arguments if given.
-     * @return bool
+     * @return any
      */
-    public function fire(string $name, ...$functionArguments): bool
+    public function fire(string $name, ...$functionArguments)
     {
         $name = $this->normalizeName($name);
         if (isset($this->stack[$name])) {
@@ -135,12 +135,10 @@ final class Events
             $function = $event->getFunction();
             $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
 
-            call_user_func_array($function, $functionArguments);
-
-            return true;
+            return call_user_func_array($function, $functionArguments);
         }
 
-        return false; // no event found
+        return null; // no event found
     }
 
     /**
