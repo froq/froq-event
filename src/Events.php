@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace froq\event;
 
+use froq\event\{Event, EventException};
+
 /**
  * Events.
  * @package froq\event
@@ -37,33 +39,34 @@ final class Events
 {
     /**
      * Stack.
-     * @var array
+     * @var array<froq\event\Event>
      */
-    private $stack = [];
+    private array $stack = [];
 
     /**
      * Constructor.
-     * @param array $stack
+     * @param array|null $stack
      */
-    public function __construct(array $stack = [])
+    public function __construct(array $stack = null)
     {
-        $this->setStack($stack);
+        $stack && $this->setStack($stack);
     }
 
     /**
      * Set stack.
-     * @param  array $stack
+     * @param  array<froq\event\Event> $stack
      * @return void
-     * @throws froq\eventException
+     * @throws froq\event\EventException
      */
     public function setStack(array $stack): void
     {
-        // reset
+        // Reset.
         $this->stack = [];
 
         foreach ($stack as $event) {
             if (!$event instanceof Event) {
-                throw new EventException('Stack elements must be instanceof froq\event\Event object');
+                throw new EventException(sprintf('Stack elements must be instance of %s object',
+                    Event::class));
             }
 
             $this->stack[$this->normalizeName($event->getName())] = $event;
@@ -77,6 +80,16 @@ final class Events
     public function getStack(): array
     {
         return $this->stack;
+    }
+
+    /**
+     * Has.
+     * @param  string $name
+     * @return bool
+     */
+    public function has(string $name): bool
+    {
+        return isset($this->stack[$this->normalizeName($name)]);
     }
 
     /**
@@ -106,16 +119,6 @@ final class Events
     }
 
     /**
-     * Has.
-     * @param  string $name
-     * @return bool
-     */
-    public function has(string $name): bool
-    {
-        return isset($this->stack[$this->normalizeName($name)]);
-    }
-
-    /**
      * Fire.
      * @param  string $name
      * @param  ...    $functionArguments Runtime arguments if given.
@@ -124,21 +127,19 @@ final class Events
     public function fire(string $name, ...$functionArguments)
     {
         $name = $this->normalizeName($name);
-        if (isset($this->stack[$name])) {
-            $event = $this->stack[$name];
-
-            // remove if once
-            if ($event->isOnce()) {
-                $this->off($name);
-            }
-
-            $function = $event->getFunction();
-            $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
-
-            return call_user_func_array($function, $functionArguments);
+        if (!isset($this->stack[$name])) {
+            return null; // No event.
         }
 
-        return null; // no event found
+        $event = $this->stack[$name];
+
+        // Remove if once.
+        if ($event->isOnce()) $this->off($name);
+
+        $function = $event->getFunction();
+        $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
+
+        return call_user_func_array($function, $functionArguments);
     }
 
     /**

@@ -39,7 +39,7 @@ final class Event
      * Name.
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Function.
@@ -51,13 +51,13 @@ final class Event
      * Function arguments.
      * @var array
      */
-    private $functionArguments = [];
+    private array $functionArguments = [];
 
     /**
      * Once.
      * @var bool
      */
-    private $once = true;
+    private bool $once = true;
 
     /**
      * Constructor.
@@ -69,14 +69,10 @@ final class Event
     public function __construct(string $name, callable $function, array $functionArguments = null,
         bool $once = true)
     {
-        $this->name = $name;
-        $this->function = $function;
-
-        if ($functionArguments != null) {
-            $this->setFunctionArguments($functionArguments);
-        }
-
-        $this->once = $once;
+        $this->name              = $name;
+        $this->function          = $function;
+        $this->functionArguments = $functionArguments ?? [];
+        $this->once              = $once;
     }
 
     /**
@@ -169,6 +165,6 @@ final class Event
      */
     public function isOnce(): bool
     {
-        return $this->once === true;
+        return $this->once == true;
     }
 }
