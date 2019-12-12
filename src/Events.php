@@ -45,30 +45,9 @@ final class Events
 
     /**
      * Constructor.
-     * @param array|null $stack
      */
-    public function __construct(array $stack = null)
-    {
-        $stack && $this->setStack($stack);
-    }
-
-    /**
-     * Set stack.
-     * @param  array<froq\event\Event> $stack
-     * @return void
-     * @throws froq\event\EventException
-     */
-    public function setStack(array $stack): void
-    {
-        foreach ($stack as $event) {
-            if (!$event instanceof Event) {
-                throw new EventException(sprintf('Stack elements must be instance of %s object',
-                    Event::class));
-            }
-
-            $this->stack[$this->normalizeName($event->getName())] = $event;
-        }
-    }
+    public function __construct()
+    {}
 
     /**
      * Get stack.
@@ -92,17 +71,17 @@ final class Events
     /**
      * On.
      * @param  string     $name
-     * @param  callable   $function
-     * @param  array|null $functionArguments
+     * @param  callable   $callback
+     * @param  array|null $callbackArguments
      * @param  bool       $once
      * @return void
      */
-    public function on(string $name, callable $function, array $functionArguments = null,
+    public function on(string $name, callable $callback, array $callbackArguments = null,
         bool $once = true): void
     {
         $name = $this->normalizeName($name);
 
-        $this->stack[$name] = new Event($name, $function, $functionArguments, $once);
+        $this->stack[$name] = new Event($name, $callback, $callbackArguments, $once);
     }
 
     /**
@@ -118,10 +97,10 @@ final class Events
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $functionArguments Runtime arguments if given.
+     * @param  ...    $callbackArguments Runtime arguments if given.
      * @return any
      */
-    public function fire(string $name, ...$functionArguments)
+    public function fire(string $name, ...$callbackArguments)
     {
         $event = $this->stack[$this->normalizeName($name)] ?? null;
         if ($event == null) {
@@ -132,10 +111,10 @@ final class Events
         // Remove if once.
         if ($event->isOnce()) $this->off($name);
 
-        $function = $event->getFunction();
-        $functionArguments = array_merge($event->getFunctionArguments(), $functionArguments);
+        $callback = $event->getCallback();
+        $callbackArguments = array_merge($event->getCallbackArguments(), $callbackArguments);
 
-        return call_user_func_array($function, $functionArguments);
+        return call_user_func_array($callback, $callbackArguments);
     }
 
     /**

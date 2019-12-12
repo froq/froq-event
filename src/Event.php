@@ -42,16 +42,16 @@ final class Event
     private string $name;
 
     /**
-     * Function.
+     * Callback.
      * @var callable
      */
-    private $function;
+    private $callback;
 
     /**
-     * Function arguments.
+     * Callback arguments.
      * @var array
      */
-    private array $functionArguments = [];
+    private array $callbackArguments = [];
 
     /**
      * Once.
@@ -62,16 +62,16 @@ final class Event
     /**
      * Constructor.
      * @param string     $name
-     * @param callable   $function
-     * @param array|null $functionArguments
+     * @param callable   $callback
+     * @param array|null $callbackArguments
      * @param bool       $once
      */
-    public function __construct(string $name, callable $function, array $functionArguments = null,
+    public function __construct(string $name, callable $callback, array $callbackArguments = null,
         bool $once = true)
     {
         $this->name              = $name;
-        $this->function          = $function;
-        $this->functionArguments = $functionArguments ?? [];
+        $this->callback          = $callback;
+        $this->callbackArguments = $callbackArguments ?? [];
         $this->once              = $once;
     }
 
@@ -97,45 +97,45 @@ final class Event
     }
 
     /**
-     * Set function.
-     * @param  callable $function
+     * Set callback.
+     * @param  callable $callback
      * @return self
      */
-    public function setFunction(callable $function): self
+    public function setCallback(callable $callback): self
     {
-        $this->function = $function;
+        $this->callback = $callback;
 
         return $this;
     }
 
     /**
-     * Get function.
+     * Get callback.
      * @return callable
      */
-    public function getFunction(): callable
+    public function getCallback(): callable
     {
-        return $this->function;
+        return $this->callback;
     }
 
     /**
-     * Set function arguments.
-     * @param  array $functionArguments
+     * Set callback arguments.
+     * @param  array $callbackArguments
      * @return self
      */
-    public function setFunctionArguments(array $functionArguments): self
+    public function setCallbackArguments(array $callbackArguments): self
     {
-        $this->functionArguments = $functionArguments;
+        $this->callbackArguments = $callbackArguments;
 
         return $this;
     }
 
     /**
-     * Get function arguments.
+     * Get callback arguments.
      * @return array
      */
-    public function getFunctionArguments(): array
+    public function getCallbackArguments(): array
     {
-        return $this->functionArguments;
+        return $this->callbackArguments;
     }
 
     /**
