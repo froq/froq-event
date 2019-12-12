@@ -60,9 +60,6 @@ final class Events
      */
     public function setStack(array $stack): void
     {
-        // Reset.
-        $this->stack = [];
-
         foreach ($stack as $event) {
             if (!$event instanceof Event) {
                 throw new EventException(sprintf('Stack elements must be instance of %s object',
@@ -126,12 +123,11 @@ final class Events
      */
     public function fire(string $name, ...$functionArguments)
     {
-        $name = $this->normalizeName($name);
-        if (!isset($this->stack[$name])) {
-            return null; // No event.
+        $event = $this->stack[$this->normalizeName($name)] ?? null;
+        if ($event == null) {
+            return; // No event.
         }
 
-        $event = $this->stack[$name];
 
         // Remove if once.
         if ($event->isOnce()) $this->off($name);
