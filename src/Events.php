@@ -158,7 +158,7 @@ final class Events
     {
         // Remove if once.
         if ($event->once()) {
-            $event->stack()->off($event->name());
+            $event->stack()->remove($event->name());
         }
 
         return call_user_func_array($event->callback(), $arguments);
