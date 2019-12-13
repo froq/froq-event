@@ -39,7 +39,7 @@ final class Events
 {
     /**
      * Stack.
-     * @var array<froq\event\Event>
+     * @var array<string, froq\event\Event>
      */
     private array $stack = [];
 
@@ -51,7 +51,7 @@ final class Events
 
     /**
      * Get stack.
-     * @return array
+     * @return array<string, froq\event\Event>
      */
     public function getStack(): array
     {
@@ -65,56 +65,103 @@ final class Events
      */
     public function has(string $name): bool
     {
-        return isset($this->stack[$this->normalizeName($name)]);
+        return $this->get($name) != null;
+    }
+
+    /**
+     * Add.
+     * @param  string     $name
+     * @param  callable   $callback
+     * @param  bool       $once
+     * @return void
+     * @since  4.0
+     * @throws froq\event\EventException If name is empty.
+     */
+    public function add(string $name, callable $callback, bool $once = true): void
+    {
+        $name = $this->normalizeName($name);
+        if ($name == '') {
+            throw new EventException('Event name must not be empty');
+        }
+
+        $this->stack[$name] = new Event($name, $callback, $once, $this);
+    }
+
+    /**
+     * Get.
+     * @param  string $name
+     * @return ?froq\event\Event
+     * @since  4.0
+     */
+    public function get(string $name): ?Event
+    {
+        $name = $this->normalizeName($name);
+
+        return $this->stack[$name] ?? null;
+    }
+
+    /**
+     * Remove.
+     * @param  string $name
+     * @return void
+     * @since  4.0
+     */
+    public function remove(string $name): void
+    {
+        $name = $this->normalizeName($name);
+
+        unset($this->stack[$name]);
     }
 
     /**
      * On.
-     * @param  string     $name
-     * @param  callable   $callback
-     * @param  array|null $callbackArguments
-     * @param  bool       $once
-     * @return void
+     * @aliasOf add()
      */
-    public function on(string $name, callable $callback, array $callbackArguments = null,
-        bool $once = true): void
+    public function on(...$arguments)
     {
-        $name = $this->normalizeName($name);
-
-        $this->stack[$name] = new Event($name, $callback, $callbackArguments, $once);
+        $this->add(...$arguments);
     }
 
     /**
      * Off.
-     * @param  string $name
-     * @return void
+     * @aliasOf remove().
      */
-    public function off(string $name): void
+    public function off(...$arguments)
     {
-        unset($this->stack[$this->normalizeName($name)]);
+        $this->remove(...$arguments);
     }
 
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $callbackArguments Runtime arguments if given.
+     * @param  ...    $arguments Runtime arguments if given.
      * @return any
      */
-    public function fire(string $name, ...$callbackArguments)
+    public function fire(string $name, ...$arguments)
     {
-        $event = $this->stack[$this->normalizeName($name)] ?? null;
+        $event = $this->get($name);
         if ($event == null) {
             return; // No event.
         }
 
+        return self::fireEvent($event, ...$arguments);
+    }
 
+    /**
+     * Fire event.
+     * @param  froq\event\Event $event
+     * @param  ...              $arguments
+     * @return any
+     * @since  4.0
+     */
+    public static function fireEvent(Event $event, ...$arguments)
+    {
         // Remove if once.
-        if ($event->isOnce()) $this->off($name);
+        if ($event->once()) {
+            $event->stack()->off($event->name());
+        }
 
-        $callback = $event->getCallback();
-        $callbackArguments = array_merge($event->getCallbackArguments(), $callbackArguments);
-
-        return call_user_func_array($callback, $callbackArguments);
+        return call_user_func_array($event->callback(), $arguments);
     }
 
     /**
@@ -124,6 +171,6 @@ final class Events
      */
     private function normalizeName(string $name): string
     {
-        return strtolower($name);
+        return strtolower(trim($name));
     }
 }
