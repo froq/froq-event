@@ -58,7 +58,7 @@ final class Event
     private bool $once = true;
 
     /**
-     * Stack (link to events stack for off() etc. @see Events.fireEvent()).
+     * Stack (link to events stack for remove() etc. @see Events.fireEvent()).
      * @var froq\event\Events
      * @since 4.0
      */
