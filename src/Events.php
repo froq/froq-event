@@ -75,7 +75,7 @@ final class Events
      * @param  bool       $once
      * @return void
      * @since  4.0
-     * @throws froq\event\EventException If name is empty.
+     * @throws froq\event\EventException
      */
     public function add(string $name, callable $callback, bool $once = true): void
     {
