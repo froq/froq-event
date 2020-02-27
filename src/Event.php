@@ -75,7 +75,9 @@ final class Event
         Events $stack)
     {
         // Uniform callback (rid of c-all-able weirdo).
-        $callback = Closure::fromCallable($callback);
+        if (!$callback instanceof Closure) {
+            $callback = Closure::fromCallable($callback);
+        }
 
         $this->stack    = $stack;
         $this->name     = $name;
