@@ -26,12 +26,14 @@ declare(strict_types=1);
 
 namespace froq\event;
 
+use froq\common\Exception;
+
 /**
- * Event exception.
+ * Event Exception.
  * @package froq\event
  * @object  froq\event\EventException
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
  */
-final class EventException extends \Exception
+final class EventException extends Exception
 {}

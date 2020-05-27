@@ -1,14 +1,15 @@
 {
     "name": "froq/froq-event",
     "homepage": "https://github.com/froq/froq-event",
-    "description": "Event module for Froq!",
+    "description": "Froq! Event.",
     "keywords": ["froq", "event"],
     "license": "MIT",
     "authors": [
         {"name": "Kerem Güneş", "email": "k-gun@mail.com"}
     ],
     "require": {
-        "php": "^7.2"
+        "php": "^7.4",
+        "froq/froq-common": "^4.0"
     },
     "autoload": {
         "classmap": ["src/"]

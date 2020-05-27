@@ -26,12 +26,16 @@ declare(strict_types=1);
 
 namespace froq\event;
 
+use froq\event\Events;
+use Closure;
+
 /**
  * Event.
  * @package froq\event
  * @object  froq\event\Event
  * @author  Kerem Güneş <k-gun@mail.com>
  * @since   1.0
+ * @internal
  */
 final class Event
 {
@@ -39,136 +43,93 @@ final class Event
      * Name.
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
-     * Function.
+     * Callback.
      * @var callable
      */
-    private $function;
-
-    /**
-     * Function arguments.
-     * @var array
-     */
-    private $functionArguments = [];
+    private $callback;
 
     /**
      * Once.
      * @var bool
      */
-    private $once = true;
+    private bool $once = true;
+
+    /**
+     * Stack (link to events stack for remove() etc. @see Events.fireEvent()).
+     * @var froq\event\Events
+     * @since 4.0
+     */
+    private Events $stack;
 
     /**
      * Constructor.
-     * @param string     $name
-     * @param callable   $function
-     * @param array|null $functionArguments
-     * @param bool       $once
+     * @param string                $name
+     * @param callable              $callback
+     * @param bool                  $once
+     * @param froq\event\Events $stack
      */
-    public function __construct(string $name, callable $function, array $functionArguments = null,
-        bool $once = true)
+    public function __construct(string $name, callable $callback, bool $once = true,
+        Events $stack)
     {
-        $this->name = $name;
-        $this->function = $function;
-
-        if ($functionArguments != null) {
-            $this->setFunctionArguments($functionArguments);
+        // Uniform callback (rid of c-all-able weirdo).
+        if (!$callback instanceof Closure) {
+            $callback = Closure::fromCallable($callback);
         }
 
-        $this->once = $once;
+        $this->stack    = $stack;
+        $this->name     = $name;
+        $this->callback = $callback;
+        $this->once     = $once;
     }
 
     /**
-     * Set name.
-     * @param  string $name
-     * @return self
+     * Invoke.
+     * @param  ... $arguments
+     * @return any
+     * @since  4.0
      */
-    public function setName(string $name): self
+    public function __invoke(...$arguments)
     {
-        $this->name = $name;
-
-        return $this;
+        return Events::fireEvent($this, ...$arguments);
     }
 
     /**
-     * Get name.
+     * Name.
      * @return string
      */
-    public function getName(): string
+    public function name(): string
     {
         return $this->name;
     }
 
     /**
-     * Set function.
-     * @param  callable $function
-     * @return self
-     */
-    public function setFunction(callable $function): self
-    {
-        $this->function = $function;
-
-        return $this;
-    }
-
-    /**
-     * Get function.
+     * Callback.
      * @return callable
      */
-    public function getFunction(): callable
+    public function callback(): callable
     {
-        return $this->function;
+        return $this->callback;
     }
 
     /**
-     * Set function arguments.
-     * @param  array $functionArguments
-     * @return self
-     */
-    public function setFunctionArguments(array $functionArguments): self
-    {
-        $this->functionArguments = $functionArguments;
-
-        return $this;
-    }
-
-    /**
-     * Get function arguments.
-     * @return array
-     */
-    public function getFunctionArguments(): array
-    {
-        return $this->functionArguments;
-    }
-
-    /**
-     * Set once.
-     * @param  bool $once
-     * @return self
-     */
-    public function setOnce(bool $once): self
-    {
-        $this->once = $once;
-
-        return $this;
-    }
-
-    /**
-     * Get once.
+     * Once.
      * @return bool
      */
-    public function getOnce(): bool
+    public function once(): bool
     {
         return $this->once;
     }
 
     /**
-     * Is once.
-     * @return bool
+     * Stack.
+     * @return froq\event\Events
+     * @since  4.0
      */
-    public function isOnce(): bool
+    public function stack(): Events
     {
-        return $this->once === true;
+        return $this->stack;
     }
 }
