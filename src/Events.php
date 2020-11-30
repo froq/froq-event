@@ -96,42 +96,42 @@ final class Events
     }
 
     /** @alias of add() */
-    public function on(...$a) { $this->add(...$a); }
+    public function on(...$args) { $this->add(...$args); }
 
     /** @alias of remove() */
-    public function off(...$a) { $this->remove(...$a); }
+    public function off(...$args) { $this->remove(...$args); }
 
     /**
      * Fire.
      * @param  string $name
-     * @param  ...    $arguments Runtime arguments if given.
+     * @param  ...    $args Runtime arguments if given.
      * @return any
      */
-    public function fire(string $name, ...$arguments)
+    public function fire(string $name, ...$args)
     {
         $event = $this->get($name);
         if ($event == null) {
             return; // No event.
         }
 
-        return self::fireEvent($event, ...$arguments);
+        return self::fireEvent($event, ...$args);
     }
 
     /**
      * Fire event.
      * @param  froq\event\Event $event
-     * @param  ...              $arguments
+     * @param  ...              $args
      * @return any
      * @since  4.0
      */
-    public static function fireEvent(Event $event, ...$arguments)
+    public static function fireEvent(Event $event, ...$args)
     {
         // Remove if once.
         if ($event->once()) {
             $event->stack()->remove($event->name());
         }
 
-        return call_user_func_array($event->callback(), $arguments);
+        return call_user_func_array($event->callback(), $args);
     }
 
     /**
