@@ -95,23 +95,11 @@ final class Events
         unset($this->stack[$name]);
     }
 
-    /**
-     * On.
-     * @aliasOf add()
-     */
-    public function on(...$arguments)
-    {
-        $this->add(...$arguments);
-    }
+    /** @alias of add() */
+    public function on(...$_) { $this->add(...$_); }
 
-    /**
-     * Off.
-     * @aliasOf remove().
-     */
-    public function off(...$arguments)
-    {
-        $this->remove(...$arguments);
-    }
+    /** @alias of remove() */
+    public function off(...$_) { $this->remove(...$_); }
 
     /**
      * Fire.
