@@ -96,10 +96,10 @@ final class Events
     }
 
     /** @alias of add() */
-    public function on(...$_) { $this->add(...$_); }
+    public function on(...$a) { $this->add(...$a); }
 
     /** @alias of remove() */
-    public function off(...$_) { $this->remove(...$_); }
+    public function off(...$a) { $this->remove(...$a); }
 
     /**
      * Fire.
