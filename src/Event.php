@@ -69,13 +69,13 @@ final class Event
 
     /**
      * Invoke.
-     * @param  ... $arguments
+     * @param  ... $args
      * @return any
      * @since  4.0
      */
-    public function __invoke(...$arguments)
+    public function __invoke(...$args)
     {
-        return Events::fireEvent($this, ...$arguments);
+        return Events::fireEvent($this, ...$args);
     }
 
     /**
