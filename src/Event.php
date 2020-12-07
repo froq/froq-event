@@ -41,30 +41,29 @@ final class Event
 
     /**
      * Stack (link to events stack for remove() etc. @see Events.fireEvent()).
-     * @var froq\event\Events
+     * @var froq\event\Events|null
      * @since 4.0
      */
-    private Events $stack;
+    private ?Events $stack = null;
 
     /**
      * Constructor.
-     * @param string                $name
-     * @param callable              $callback
-     * @param bool                  $once
-     * @param froq\event\Events $stack
+     * @param string                 $name
+     * @param callable               $callback
+     * @param bool                   $once
+     * @param froq\event\Events|null $stack
      */
-    public function __construct(string $name, callable $callback, bool $once = true,
-        Events $stack)
+    public function __construct(string $name, callable $callback, bool $once = true, Events $stack = null)
     {
         // Uniform callback (rid of c-all-able weirdo).
         if (!$callback instanceof Closure) {
             $callback = Closure::fromCallable($callback);
         }
 
-        $this->stack    = $stack;
         $this->name     = $name;
         $this->callback = $callback;
         $this->once     = $once;
+        $this->stack    = $stack;
     }
 
     /**
@@ -107,10 +106,10 @@ final class Event
 
     /**
      * Stack.
-     * @return froq\event\Events
+     * @return froq\event\Events|null
      * @since  4.0
      */
-    public function stack(): Events
+    public function stack(): Events|null
     {
         return $this->stack;
     }
