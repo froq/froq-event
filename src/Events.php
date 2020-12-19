@@ -52,9 +52,9 @@ final class Events
 
     /**
      * Add.
-     * @param  string     $name
-     * @param  callable   $callback
-     * @param  bool       $once
+     * @param  string   $name
+     * @param  callable $callback
+     * @param  bool     $once
      * @return void
      * @since  4.0
      * @throws froq\event\EventException
