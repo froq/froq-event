@@ -21,22 +21,13 @@ use Closure;
  */
 final class Event
 {
-    /**
-     * Name.
-     * @var string
-     */
+    /** @var string */
     private string $name;
 
-    /**
-     * Callback.
-     * @var callable
-     */
+    /** @var callable */
     private $callback;
 
-    /**
-     * Once.
-     * @var bool
-     */
+    /** @var bool */
     private bool $once = true;
 
     /**
@@ -48,6 +39,7 @@ final class Event
 
     /**
      * Constructor.
+     *
      * @param string                 $name
      * @param callable               $callback
      * @param bool                   $once
@@ -67,7 +59,8 @@ final class Event
     }
 
     /**
-     * Invoke.
+     * Run event.
+     *
      * @param  ... $args
      * @return any
      * @since  4.0
@@ -78,7 +71,8 @@ final class Event
     }
 
     /**
-     * Name.
+     * Get name.
+     *
      * @return string
      */
     public function name(): string
@@ -87,7 +81,8 @@ final class Event
     }
 
     /**
-     * Callback.
+     * Get callback.
+     *
      * @return callable
      */
     public function callback(): callable
@@ -96,7 +91,8 @@ final class Event
     }
 
     /**
-     * Once.
+     * Get once state.
+     *
      * @return bool
      */
     public function once(): bool
@@ -105,7 +101,8 @@ final class Event
     }
 
     /**
-     * Stack.
+     * Get holder stack.
+     *
      * @return froq\event\Events|null
      * @since  4.0
      */

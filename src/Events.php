@@ -19,10 +19,7 @@ use froq\event\{EventException, Event};
  */
 final class Events
 {
-    /**
-     * Stack.
-     * @var array<string, froq\event\Event>
-     */
+    /** @var array<string, froq\event\Event> */
     private array $stack = [];
 
     /**
@@ -32,16 +29,18 @@ final class Events
     {}
 
     /**
-     * Get stack.
+     * Get stack property.
+     *
      * @return array<string, froq\event\Event>
      */
-    public function getStack(): array
+    public function stack(): array
     {
         return $this->stack;
     }
 
     /**
-     * Has.
+     * Check whether any event exists with given name.
+     *
      * @param  string $name
      * @return bool
      */
@@ -51,7 +50,8 @@ final class Events
     }
 
     /**
-     * Add.
+     * Add/register an event.
+     *
      * @param  string   $name
      * @param  callable $callback
      * @param  bool     $once
@@ -70,12 +70,13 @@ final class Events
     }
 
     /**
-     * Get.
+     * Get an event by given name.
+     *
      * @param  string $name
-     * @return ?froq\event\Event
+     * @return froq\event\Event|null
      * @since  4.0
      */
-    public function get(string $name): ?Event
+    public function get(string $name): Event|null
     {
         $name = $this->normalizeName($name);
 
@@ -83,7 +84,8 @@ final class Events
     }
 
     /**
-     * Remove.
+     * Remove an event by given name.
+     *
      * @param  string $name
      * @return void
      * @since  4.0
@@ -102,7 +104,8 @@ final class Events
     public function off(...$args) { $this->remove(...$args); }
 
     /**
-     * Fire.
+     * Fire an event by given name.
+     *
      * @param  string $name
      * @param  ...    $args Runtime arguments if given.
      * @return any
@@ -118,7 +121,8 @@ final class Events
     }
 
     /**
-     * Fire event.
+     * Fire an event object.
+     *
      * @param  froq\event\Event $event
      * @param  ...              $args
      * @return any
@@ -136,9 +140,11 @@ final class Events
     }
 
     /**
-     * Normalize name.
+     * Normalize event name.
+     *
      * @param  string $name
      * @return string
+     * @internal
      */
     private function normalizeName(string $name): string
     {
