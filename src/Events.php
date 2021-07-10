@@ -1,46 +1,25 @@
 <?php
 /**
- * MIT License <https://opensource.org/licenses/mit>
- *
- * Copyright (c) 2015 Kerem Güneş
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is furnished
- * to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Copyright (c) 2015 · Kerem Güneş
+ * Apache License 2.0 · http://github.com/froq/froq-event
  */
 declare(strict_types=1);
 
 namespace froq\event;
 
-use froq\event\{Event, EventException};
+use froq\event\{EventException, Event};
 
 /**
  * Events.
+ *
  * @package froq\event
  * @object  froq\event\Events
- * @author  Kerem Güneş <k-gun@mail.com>
+ * @author  Kerem Güneş
  * @since   1.0
  */
 final class Events
 {
-    /**
-     * Stack.
-     * @var array<string, froq\event\Event>
-     */
+    /** @var array<string, froq\event\Event> */
     private array $stack = [];
 
     /**
@@ -50,16 +29,18 @@ final class Events
     {}
 
     /**
-     * Get stack.
+     * Get stack property.
+     *
      * @return array<string, froq\event\Event>
      */
-    public function getStack(): array
+    public function stack(): array
     {
         return $this->stack;
     }
 
     /**
-     * Has.
+     * Check whether any event exists with given name.
+     *
      * @param  string $name
      * @return bool
      */
@@ -69,10 +50,11 @@ final class Events
     }
 
     /**
-     * Add.
-     * @param  string     $name
-     * @param  callable   $callback
-     * @param  bool       $once
+     * Add/register an event.
+     *
+     * @param  string   $name
+     * @param  callable $callback
+     * @param  bool     $once
      * @return void
      * @since  4.0
      * @throws froq\event\EventException
@@ -88,12 +70,13 @@ final class Events
     }
 
     /**
-     * Get.
+     * Get an event by given name.
+     *
      * @param  string $name
-     * @return ?froq\event\Event
+     * @return froq\event\Event|null
      * @since  4.0
      */
-    public function get(string $name): ?Event
+    public function get(string $name): Event|null
     {
         $name = $this->normalizeName($name);
 
@@ -101,7 +84,8 @@ final class Events
     }
 
     /**
-     * Remove.
+     * Remove an event by given name.
+     *
      * @param  string $name
      * @return void
      * @since  4.0
@@ -113,61 +97,54 @@ final class Events
         unset($this->stack[$name]);
     }
 
-    /**
-     * On.
-     * @aliasOf add()
-     */
-    public function on(...$arguments)
-    {
-        $this->add(...$arguments);
-    }
+    /** @alias of add() */
+    public function on(...$args) { $this->add(...$args); }
+
+    /** @alias of remove() */
+    public function off(...$args) { $this->remove(...$args); }
 
     /**
-     * Off.
-     * @aliasOf remove().
-     */
-    public function off(...$arguments)
-    {
-        $this->remove(...$arguments);
-    }
-
-    /**
-     * Fire.
+     * Fire an event by given name.
+     *
      * @param  string $name
-     * @param  ...    $arguments Runtime arguments if given.
+     * @param  ...    $args Runtime arguments if given.
      * @return any
      */
-    public function fire(string $name, ...$arguments)
+    public function fire(string $name, ...$args)
     {
         $event = $this->get($name);
         if ($event == null) {
             return; // No event.
         }
 
-        return self::fireEvent($event, ...$arguments);
+        return self::fireEvent($event, ...$args);
     }
 
     /**
-     * Fire event.
+     * Fire an event object.
+     *
      * @param  froq\event\Event $event
-     * @param  ...              $arguments
+     * @param  ...              $args
      * @return any
      * @since  4.0
      */
-    public static function fireEvent(Event $event, ...$arguments)
+    public static function fireEvent(Event $event, ...$args)
     {
         // Remove if once.
         if ($event->once()) {
-            $event->stack()->remove($event->name());
+            ($stack = $event->stack())
+                && $stack->remove($event->name());
         }
 
-        return call_user_func_array($event->callback(), $arguments);
+        return call_user_func_array($event->callback(), $args);
     }
 
     /**
-     * Normalize name.
+     * Normalize event name.
+     *
      * @param  string $name
      * @return string
+     * @internal
      */
     private function normalizeName(string $name): string
     {
