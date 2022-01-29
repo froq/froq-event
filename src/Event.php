@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace froq\event;
 
-use froq\event\Events;
 use Closure;
 
 /**
@@ -17,96 +16,78 @@ use Closure;
  * @object  froq\event\Event
  * @author  Kerem Güneş
  * @since   1.0
- * @internal
  */
 final class Event
 {
     /** @var string */
-    private string $name;
+    public readonly string $name;
 
-    /** @var callable */
-    private $callback;
+    /** @var Closure */
+    public readonly Closure $callback;
 
     /** @var bool */
-    private bool $once = true;
+    public readonly bool $once;
 
     /**
-     * Stack (link to events stack for remove() etc. @see Events.fireEvent()).
+     * Stack (link to events stack for remove() etc).
      * @var froq\event\Events|null
-     * @since 4.0
+     * @see froq\event\Events.fireEvent()
+     * @since 4.0, 6.0
      */
-    private ?Events $stack = null;
+    private Events|null $stack = null;
 
     /**
      * Constructor.
      *
-     * @param string                 $name
-     * @param callable               $callback
-     * @param bool                   $once
-     * @param froq\event\Events|null $stack
+     * @param string   $name
+     * @param callable $callback
+     * @param bool     $once
      */
-    public function __construct(string $name, callable $callback, bool $once = true, Events $stack = null)
+    public function __construct(string $name, callable $callback, bool $once = true)
     {
-        // Uniform callback (rid of c-all-able weirdo).
+        // Uniform callback.
         if (!$callback instanceof Closure) {
-            $callback = Closure::fromCallable($callback);
+            $callback = $callback(...);
         }
 
         $this->name     = $name;
         $this->callback = $callback;
         $this->once     = $once;
-        $this->stack    = $stack;
     }
 
     /**
      * Run event.
      *
-     * @param  ... $args
-     * @return any
+     * @param  mixed ...$arguments
+     * @return mixed|null
      * @since  4.0
      */
-    public function __invoke(...$args)
+    public function __invoke(mixed ...$arguments): mixed
     {
-        return Events::fireEvent($this, ...$args);
+        return Events::fireEvent($this, ...$arguments);
     }
 
+    /** @aliasOf __invoke() */
+    public function fire(...$args) { return $this->__invoke(...$args); }
+
     /**
-     * Get name.
+     * Set stack.
      *
-     * @return string
+     * @return void
+     * @since  6.0
      */
-    public function name(): string
+    public function setStack(Events $stack): void
     {
-        return $this->name;
+        $this->stack = $stack;
     }
 
     /**
-     * Get callback.
-     *
-     * @return callable
-     */
-    public function callback(): callable
-    {
-        return $this->callback;
-    }
-
-    /**
-     * Get once state.
-     *
-     * @return bool
-     */
-    public function once(): bool
-    {
-        return $this->once;
-    }
-
-    /**
-     * Get holder stack.
+     * Get stack.
      *
      * @return froq\event\Events|null
-     * @since  4.0
+     * @since  6.0
      */
-    public function stack(): Events|null
+    public function getStack(): Events|null
     {
         return $this->stack;
     }

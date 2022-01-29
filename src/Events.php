@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace froq\event;
 
-use froq\event\{EventException, Event};
-
 /**
  * Events.
  *
@@ -46,7 +44,9 @@ final class Events
      */
     public function has(string $name): bool
     {
-        return $this->get($name) != null;
+        $name = self::normalizeName($name);
+
+        return isset($this->stack[$name]);
     }
 
     /**
@@ -61,12 +61,15 @@ final class Events
      */
     public function add(string $name, callable $callback, bool $once = true): void
     {
-        $name = $this->normalizeName($name);
-        if ($name == '') {
+        $name = self::normalizeName($name);
+        if ($name === '') {
             throw new EventException('Event name must not be empty');
         }
 
-        $this->stack[$name] = new Event($name, $callback, $once, $this);
+        $event = new Event($name, $callback, $once, $this);
+        $event->setStack($this);
+
+        $this->stack[$name] = $event;
     }
 
     /**
@@ -78,7 +81,7 @@ final class Events
      */
     public function get(string $name): Event|null
     {
-        $name = $this->normalizeName($name);
+        $name = self::normalizeName($name);
 
         return $this->stack[$name] ?? null;
     }
@@ -92,61 +95,53 @@ final class Events
      */
     public function remove(string $name): void
     {
-        $name = $this->normalizeName($name);
+        $name = self::normalizeName($name);
 
         unset($this->stack[$name]);
     }
 
-    /** @alias of add() */
+    /** @aliasOf add() */
     public function on(...$args) { $this->add(...$args); }
 
-    /** @alias of remove() */
+    /** @aliasOf remove() */
     public function off(...$args) { $this->remove(...$args); }
 
     /**
      * Fire an event by given name.
      *
-     * @param  string $name
-     * @param  ...    $args Runtime arguments if given.
-     * @return any
+     * @param  string    $name
+     * @param  mixed  ...$arguments Calltime arguments.
+     * @return mixed|false
      */
-    public function fire(string $name, ...$args)
+    public function fire(string $name, mixed ...$arguments): mixed
     {
         $event = $this->get($name);
-        if ($event == null) {
-            return; // No event.
-        }
 
-        return self::fireEvent($event, ...$args);
+        return $event ? self::fireEvent($event, ...$arguments) : false;
     }
 
     /**
      * Fire an event object.
      *
-     * @param  froq\event\Event $event
-     * @param  ...              $args
-     * @return any
+     * @param  froq\event\Event    $event
+     * @param  mixed            ...$arguments
+     * @return mixed|null
      * @since  4.0
      */
-    public static function fireEvent(Event $event, ...$args)
+    public static function fireEvent(Event $event, mixed ...$arguments): mixed
     {
         // Remove if once.
-        if ($event->once()) {
-            ($stack = $event->stack())
-                && $stack->remove($event->name());
+        if ($event->once && ($stack = $event->getStack())) {
+            $stack->remove($event->name);
         }
 
-        return call_user_func_array($event->callback(), $args);
+        return call_user_func_array($event->callback, $arguments);
     }
 
     /**
      * Normalize event name.
-     *
-     * @param  string $name
-     * @return string
-     * @internal
      */
-    private function normalizeName(string $name): string
+    private static function normalizeName(string $name): string
     {
         return strtolower(trim($name));
     }
