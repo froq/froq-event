@@ -142,8 +142,6 @@ final class Events
 
     /**
      * Normalize event name.
-     *
-     * @throws froq\event\EventException
      */
     private static function normalizeName(string $name): string
     {
