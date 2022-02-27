@@ -67,8 +67,11 @@ final class Event
         return Events::fireEvent($this, ...$arguments);
     }
 
-    /** @aliasOf __invoke() */
-    public function fire(...$args) { return $this->__invoke(...$args); }
+    /** @alias __invoke() */
+    public function fire(...$args)
+    {
+        return $this->__invoke(...$args);
+    }
 
     /**
      * Set stack.

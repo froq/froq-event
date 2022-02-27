@@ -57,14 +57,10 @@ final class Events
      * @param  bool     $once
      * @return void
      * @since  4.0
-     * @throws froq\event\EventException
      */
     public function add(string $name, callable $callback, bool $once = true): void
     {
         $name = self::normalizeName($name);
-        if ($name === '') {
-            throw new EventException('Event name must not be empty');
-        }
 
         $event = new Event($name, $callback, $once, $this);
         $event->setStack($this);
@@ -100,11 +96,17 @@ final class Events
         unset($this->stack[$name]);
     }
 
-    /** @aliasOf add() */
-    public function on(...$args) { $this->add(...$args); }
+    /** @alias add() */
+    public function on(...$args)
+    {
+        $this->add(...$args);
+    }
 
-    /** @aliasOf remove() */
-    public function off(...$args) { $this->remove(...$args); }
+    /** @alias remove() */
+    public function off(...$args)
+    {
+        $this->remove(...$args);
+    }
 
     /**
      * Fire an event by given name.
@@ -125,7 +127,7 @@ final class Events
      *
      * @param  froq\event\Event    $event
      * @param  mixed            ...$arguments
-     * @return mixed|null
+     * @return mixed
      * @since  4.0
      */
     public static function fireEvent(Event $event, mixed ...$arguments): mixed
@@ -140,9 +142,16 @@ final class Events
 
     /**
      * Normalize event name.
+     *
+     * @throws froq\event\EventException
      */
     private static function normalizeName(string $name): string
     {
-        return strtolower(trim($name));
+        $name = trim($name);
+        if ($name == '') {
+            throw new EventException('Empty event name');
+        }
+
+        return strtolower($name);
     }
 }
