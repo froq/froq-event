@@ -32,7 +32,6 @@ final class Event
      * Stack (link to events stack for remove() etc).
      * @var froq\event\Events|null
      * @see froq\event\Events.fireEvent()
-     * @since 4.0, 6.0
      */
     private Events|null $stack = null;
 
