@@ -8,14 +8,14 @@ declare(strict_types=1);
 namespace froq\event;
 
 /**
- * Events.
+ * Event stack class.
  *
  * @package froq\event
  * @object  froq\event\Events
  * @author  Kerem Güneş
  * @since   1.0
  */
-final class Events
+class Events
 {
     /** @var array<string, froq\event\Event> */
     private array $stack = [];
@@ -142,6 +142,8 @@ final class Events
 
     /**
      * Normalize event name.
+     *
+     * @throws froq\event\EventException
      */
     private static function normalizeName(string $name): string
     {

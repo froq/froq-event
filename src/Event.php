@@ -10,14 +10,14 @@ namespace froq\event;
 use Closure;
 
 /**
- * Event.
+ * Event class.
  *
  * @package froq\event
  * @object  froq\event\Event
  * @author  Kerem Güneş
  * @since   1.0
  */
-final class Event
+class Event
 {
     /** @var string */
     public readonly string $name;
@@ -30,6 +30,7 @@ final class Event
 
     /**
      * Stack (link to events stack for remove() etc).
+     *
      * @var froq\event\Events|null
      * @see froq\event\Events.fireEvent()
      */
