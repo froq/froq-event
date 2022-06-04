@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace froq\event;
 
-use Closure;
-
 /**
  * Event class.
  *
@@ -23,18 +21,18 @@ class Event
     public readonly string $name;
 
     /** @var Closure */
-    public readonly Closure $callback;
+    public readonly \Closure $callback;
 
     /** @var bool */
     public readonly bool $once;
 
     /**
-     * Stack (link to events stack for remove() etc).
+     * Stack (link to event stack for remove() etc).
      *
-     * @var froq\event\Events|null
-     * @see froq\event\Events.fireEvent()
+     * @var froq\event\EventStack|null
+     * @see froq\event\Firer::fire()
      */
-    private Events|null $stack = null;
+    private ?EventStack $stack = null;
 
     /**
      * Constructor.
@@ -45,32 +43,21 @@ class Event
      */
     public function __construct(string $name, callable $callback, bool $once = true)
     {
-        // Uniform callback.
-        if (!$callback instanceof Closure) {
-            $callback = $callback(...);
-        }
-
-        $this->name     = $name;
-        $this->callback = $callback;
+        $this->name     = EventUtil::normalizeName($name);
+        $this->callback = EventUtil::normalizeCallback($callback);
         $this->once     = $once;
     }
 
     /**
      * Run event.
      *
-     * @param  mixed ...$arguments
+     * @param  mixed ...$args
      * @return mixed|null
      * @since  4.0
      */
-    public function __invoke(mixed ...$arguments): mixed
+    public function __invoke(mixed ...$args): mixed
     {
-        return Events::fireEvent($this, ...$arguments);
-    }
-
-    /** @alias __invoke() */
-    public function fire(...$args)
-    {
-        return $this->__invoke(...$args);
+        return Firer::fire($this, ...$args);
     }
 
     /**
@@ -79,7 +66,7 @@ class Event
      * @return void
      * @since  6.0
      */
-    public function setStack(Events $stack): void
+    public function setStack(EventStack $stack): void
     {
         $this->stack = $stack;
     }
@@ -87,11 +74,19 @@ class Event
     /**
      * Get stack.
      *
-     * @return froq\event\Events|null
+     * @return froq\event\EventStack|null
      * @since  6.0
      */
-    public function getStack(): Events|null
+    public function getStack(): EventStack|null
     {
         return $this->stack;
+    }
+
+    /**
+     * @alias __invoke()
+     */
+    public function fire(...$args)
+    {
+        return $this->__invoke(...$args);
     }
 }
