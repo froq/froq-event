@@ -16,7 +16,7 @@ namespace froq\event;
  * @since   4.0, 6.0
  * @internal
  */
-class Firer
+final class Firer
 {
     /**
      * Fire an event object.
