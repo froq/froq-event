@@ -28,6 +28,7 @@ final class EventUtil
     public static function normalizeName(string $name): string
     {
         $name = trim($name);
+
         if ($name == '') {
             throw new EventException('Empty event name');
         }

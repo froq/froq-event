@@ -98,17 +98,26 @@ class EventStack
     }
 
     /**
-     * Fire an event by given name.
+     * Fire an event by given name or throw a `EventStackException` if no event found
+     * by given name.
      *
      * @param  string    $name
      * @param  mixed  ...$args Call-time arguments.
-     * @return mixed|false
+     * @return mixed
+     * @throws froq\event\EventStackException
      */
     public function fire(string $name, mixed ...$args): mixed
     {
         $event = $this->get($name);
 
-        return $event ? Firer::fire($event, ...$args) : false;
+        if (!$event) {
+            throw new EventStackException(
+                'No event found in stack with name `%s`',
+                $name
+            );
+        }
+
+        return Firer::fire($event, ...$args);
     }
 
     /**
