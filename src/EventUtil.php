@@ -14,9 +14,10 @@ namespace froq\event;
  * @object  froq\event\EventUtil
  * @author  Kerem Güneş
  * @since   6.0
+ * @static
  * @internal
  */
-final class EventUtil
+final class EventUtil extends \StaticClass
 {
     /**
      * Normalize event name.
