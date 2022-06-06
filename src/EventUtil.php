@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace froq\event;
 
 /**
- * Internal helper class.
+ * Internal utility class.
  *
  * @package froq\event
  * @object  froq\event\EventUtil
