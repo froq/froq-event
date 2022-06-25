@@ -13,5 +13,5 @@ namespace froq\event;
  * @author  Kerem Güneş
  * @since   6.0
  */
-class EventStackException extends \froq\common\Exception
+class EventStackException extends EventException
 {}
