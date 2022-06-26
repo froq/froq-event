@@ -17,69 +17,103 @@ namespace froq\event;
  */
 class Event
 {
-    /** @var string */
+    /** Event id (aka UUID). */
+    public readonly string $id;
+
+    /** Event name (aka type). */
     public readonly string $name;
 
-    /** @var Closure */
-    public readonly \Closure $callback;
+    /** Event target for objects only. */
+    public readonly object|null $target;
 
-    /** @var bool */
-    public readonly bool $once;
+    /** Return value of callback. */
+    private mixed $returnValue = null;
+
+    /** Propagation-stopped status. */
+    private bool $propagationStopped = false;
+
+    /** Once/date/fired states. */
+    private \State $state;
 
     /**
-     * Stack (link to event stack for remove() etc).
-     *
-     * @var froq\event\EventStack|null
-     * @see froq\event\Firer::fire()
+     * Link to event manager for remove() etc.
+     * @internal
      */
-    private ?EventStack $stack = null;
+    private ?EventManager $manager = null;
 
     /**
      * Constructor.
      *
      * @param string   $name
      * @param callable $callback
-     * @param bool     $once
+     * @param mixed ...$options
      */
-    public function __construct(string $name, callable $callback, bool $once = true)
+    public function __construct(string $name, callable $callback, mixed ...$options)
     {
-        $this->name     = EventUtil::normalizeName($name);
-        $this->callback = EventUtil::normalizeCallback($callback);
-        $this->once     = $once;
+        // Special fields to simulate JavaScript's event properties.
+        $options['target'] ??= (new \ReflectionCallable($callback))->getClosureThis();
+        $options['once']   ??= false;
+        $options['data']   ??= null;
+
+        $id             = uuid(timed: true);
+        $name           = self::normalizeName($name);
+        $callback       = self::normalizeCallback($callback);
+
+        $this->id       = $id;
+        $this->name     = $name;
+        $this->target   = $options['target'];
+        $this->state    = new \State(once: $options['once'], data: $options['data'], fired: null);
+
+        // Store this event callback.
+        EventStorage::add($this, $callback);
     }
 
     /**
-     * Run event.
+     * Dynamic setter for states in callback (eg: fn($e, $foo) => $e->foo = $foo).
      *
-     * @param  mixed ...$args
-     * @return mixed|null
-     * @since  4.0
+     * @magic
      */
-    public function __invoke(mixed ...$args): mixed
+    public function __set(string $name, mixed $value): void
     {
-        return Firer::fire($this, ...$args);
+        $this->state->set($name, $value);
     }
 
     /**
-     * Set stack.
+     * Dynamic getter for states in callback (eg: fn($e) => $e->target).
      *
-     * @return void
-     * @since  6.0
+     * @throws froq\event\EventException
+     * @magic
      */
-    public function setStack(EventStack $stack): void
+    public function __get(string $name): mixed
     {
-        $this->stack = $stack;
+        return $this->state->has($name) ? $this->state->get($name)
+             : throw EventException::forNoStateFound($name);
     }
 
     /**
-     * Get stack.
+     * Dynamic caller for callback (eg: $event(), $event(foo: 123)).
      *
-     * @return froq\event\EventStack|null
-     * @since  6.0
+     * @magic
      */
-    public function getStack(): EventStack|null
+    public function __invoke(mixed ...$arguments): mixed
     {
-        return $this->stack;
+        if (!$this->isPropagationStopped()) {
+            $callback = EventStorage::get($this);
+
+            $this->returnValue = $callback($this, ...$arguments);
+
+            // Remove from manager's stack if once.
+            if ($this->state->once) {
+                EventStorage::remove($this);
+
+                $this->manager?->remove($this->name);
+            }
+        }
+
+        // Tick fired as true.
+        $this->state->fired ??= true;
+
+        return $this->returnValue;
     }
 
     /**
@@ -87,6 +121,97 @@ class Event
      */
     public function fire(...$args)
     {
-        return $this->__invoke(...$args);
+        return $this(...$args);
+    }
+
+    /**
+     * Set return value.
+     *
+     * @param  mixed $returnValue
+     * @return void
+     */
+    public function setReturnValue(mixed $returnValue): void
+    {
+        $this->returnValue = $returnValue;
+    }
+
+    /**
+     * Get return value.
+     *
+     * @return mixed
+     */
+    public function getReturnValue(): mixed
+    {
+        return $this->returnValue;
+    }
+
+    /**
+     * Prevent further propagation of this event and invocation more than one.
+     *
+     * @return void
+     */
+    public function stopPropagation(): void
+    {
+        $this->propagationStopped = true;
+    }
+
+    /**
+     * Get propagation-stopped status.
+     *
+     * @return bool
+     */
+    public function isPropagationStopped(): bool
+    {
+        return $this->propagationStopped;
+    }
+
+    /**
+     * Set manager.
+     *
+     * @param  froq\event\EventManager
+     * @return void
+     */
+    public function setManager(EventManager $manager): void
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * Get manager.
+     *
+     * @return froq\event\EventManager|null
+     */
+    public function getManager(): EventManager|null
+    {
+        return $this->manager;
+    }
+
+    /**
+     * Normalize event name.
+     *
+     * @param  string $name
+     * @return string
+     */
+    public static function normalizeName(string $name): string
+    {
+        $name = trim($name);
+
+        return strtolower($name);
+    }
+
+    /**
+     * Normalize event callback.
+     *
+     * @param  callable $callback
+     * @return Closure
+     */
+    public static function normalizeCallback(callable $callback): \Closure
+    {
+        // Uniform callback.
+        if (!$callback instanceof \Closure) {
+            $callback = $callback(...);
+        }
+
+        return $callback;
     }
 }
