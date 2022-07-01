@@ -55,7 +55,7 @@ class Event
         $options['once']   ??= false;
         $options['data']   ??= null;
 
-        $id             = uuid(timed: true);
+        $id             = uuid();
         $name           = self::normalizeName($name);
         $callback       = self::normalizeCallback($callback);
 
