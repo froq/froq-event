@@ -32,7 +32,7 @@ class Event
     /** Propagation-stopped status. */
     private bool $propagationStopped = false;
 
-    /** Once/date/fired states. */
+    /** Once/data/fired states. */
     private \State $state;
 
     /**
