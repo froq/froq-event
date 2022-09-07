@@ -13,7 +13,7 @@ namespace froq\event;
  * @author  Kerem Güneş
  * @since   1.0, 6.0
  */
-class EventManagerException extends EventException
+class EventManagerException extends \froq\common\Exception
 {
     /**
      * Create for no event found.
@@ -23,5 +23,15 @@ class EventManagerException extends EventException
     public static function forNoEventFound(string $name): static
     {
         return new static('No event found such %q', $name);
+    }
+
+    /**
+     * Create for empty name.
+     *
+     * @return static
+     */
+    public static function forEmptyName(): static
+    {
+        return new static('Empty event name');
     }
 }

@@ -24,14 +24,4 @@ class EventException extends \froq\common\Exception
     {
         return new static('No state found such %q', $name);
     }
-
-    /**
-     * Create for empty name.
-     *
-     * @return static
-     */
-    public static function forEmptyName(): static
-    {
-        return new static('Empty event name');
-    }
 }
