@@ -29,7 +29,7 @@ class EventManager
     /**
      * Constructor.
      *
-     * @param object $target
+     * @param object|null $target
      */
     public function __construct(object $target = null)
     {
