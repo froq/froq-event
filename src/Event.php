@@ -52,7 +52,7 @@ class Event
     {
         // Special fields to simulate JavaScript's event properties.
         $options['target'] ??= (new \ReflectionCallable($callback))->getClosureThis();
-        $options['once']   ??= false;
+        $options['once']   ??= true;
         $options['data']   ??= null;
 
         $id             = uuid();
