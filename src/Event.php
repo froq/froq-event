@@ -50,19 +50,14 @@ class Event
      */
     public function __construct(string $name, callable $callback, mixed ...$options)
     {
-        // Special fields to simulate JavaScript's event properties.
-        $options['target'] ??= (new \ReflectionCallable($callback))->getClosureThis();
-        $options['once']   ??= true;
-        $options['data']   ??= null;
-
         $id           = uuid();
         $name         = self::normalizeName($name);
         $callback     = self::normalizeCallback($callback);
 
         $this->id     = $id;
         $this->name   = $name;
-        $this->target = $options['target'];
-        $this->state  = new \State(once: $options['once'], data: $options['data'], fired: null);
+        $this->target = $this->getTargetObject($options, $callback);
+        $this->state  = $this->getStateObject($options);
 
         // Store this event callback.
         EventStorage::add($this, $callback);
@@ -213,5 +208,27 @@ class Event
         }
 
         return $callback;
+    }
+
+    /**
+     * Get target object from options or callback (closure's this) for simulating
+     * JavaScript's event target.
+     */
+    private function getTargetObject(array $options, callable $callback): object|null
+    {
+        return $options['target'] // When given.
+            ?? (new \ReflectionCallable($callback))->getClosureThis();
+    }
+
+    /**
+     * Get state object initilizing with options for simulating JavaScript's event once & data.
+     */
+    private function getStateObject(array $options): \State
+    {
+        return new \State(
+            once: $options['once'] ?? true,
+            data: $options['data'] ?? null,
+            fired: null
+        );
     }
 }
