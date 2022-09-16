@@ -59,8 +59,17 @@ class Event
         $this->target = $this->getTargetObject($options, $callback);
         $this->state  = $this->getStateObject($options);
 
-        // Store this event callback.
+        // Store this event with callback.
         EventStorage::add($this, $callback);
+    }
+
+    /**
+     * Destructor.
+     */
+    public function __destruct()
+    {
+        // Unstore this event.
+        EventStorage::remove($this);
     }
 
     /**
