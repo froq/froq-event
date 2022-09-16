@@ -28,7 +28,7 @@ trait EventTrait
      */
     public function on(string $name, callable $callback, mixed ...$options): self
     {
-        $this->eventManager->on($name, $callback, ...$options);
+        $this->eventManager->add($name, $callback, ...$options);
 
         return $this;
     }
@@ -41,7 +41,7 @@ trait EventTrait
      */
     public function off(string $name): self
     {
-        $this->eventManager->off($name);
+        $this->eventManager->remove($name);
 
         return $this;
     }
