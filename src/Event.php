@@ -46,7 +46,7 @@ class Event
      *
      * @param string   $name
      * @param callable $callback
-     * @param mixed ...$options
+     * @param mixed ...$options  For "target", "once", "data" stuff.
      */
     public function __construct(string $name, callable $callback, mixed ...$options)
     {
@@ -212,7 +212,7 @@ class Event
 
     /**
      * Get target object from options or callback (closure's this) for simulating
-     * JavaScript's event target.
+     * JavaScript's event target stuff.
      */
     private function getTargetObject(array $options, callable $callback): object|null
     {
@@ -221,7 +221,8 @@ class Event
     }
 
     /**
-     * Get state object initilizing with options for simulating JavaScript's event once & data.
+     * Get state object initializing with options for simulating JavaScript's event
+     * once & data stuff (with defaults).
      */
     private function getStateObject(array $options): \State
     {
