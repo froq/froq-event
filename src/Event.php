@@ -55,14 +55,14 @@ class Event
         $options['once']   ??= true;
         $options['data']   ??= null;
 
-        $id             = uuid();
-        $name           = self::normalizeName($name);
-        $callback       = self::normalizeCallback($callback);
+        $id           = uuid();
+        $name         = self::normalizeName($name);
+        $callback     = self::normalizeCallback($callback);
 
-        $this->id       = $id;
-        $this->name     = $name;
-        $this->target   = $options['target'];
-        $this->state    = new \State(once: $options['once'], data: $options['data'], fired: null);
+        $this->id     = $id;
+        $this->name   = $name;
+        $this->target = $options['target'];
+        $this->state  = new \State(once: $options['once'], data: $options['data'], fired: null);
 
         // Store this event callback.
         EventStorage::add($this, $callback);
