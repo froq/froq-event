@@ -105,8 +105,8 @@ class Event
             }
         }
 
-        // Tick fired as true.
-        $this->state->fired ??= true;
+        // Increase fired count.
+        $this->state->fired += 1;
 
         return $this->returnValue;
     }
