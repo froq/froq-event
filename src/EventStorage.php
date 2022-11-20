@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace froq\event;
 
-use froq\util\misc\Storage;
+use froq\util\storage\Storage;
 
 /**
  * Storage class for storing event callbacks (listeners) just to keep
