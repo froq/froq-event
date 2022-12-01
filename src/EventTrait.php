@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-event
  */
-declare(strict_types=1);
-
 namespace froq\event;
 
 /**
@@ -12,7 +10,7 @@ namespace froq\event;
  * property as `froq\event\EventManager`.
  *
  * @package froq\event
- * @object  froq\event\EventTrait
+ * @class   froq\event\EventTrait
  * @author  Kerem Güneş
  * @since   6.0
  */
