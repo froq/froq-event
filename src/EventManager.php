@@ -1,26 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright (c) 2015 · Kerem Güneş
  * Apache License 2.0 · http://github.com/froq/froq-event
  */
-declare(strict_types=1);
-
 namespace froq\event;
 
 /**
  * Event manager class for stacking & firing events.
  *
  * @package froq\event
- * @object  froq\event\EventManager
+ * @class   froq\event\EventManager
  * @author  Kerem Güneş
  * @since   1.0, 6.0
  */
 class EventManager
 {
-    /**
-     * Event map.
-     * @var array<string, froq\event\Event>
-     */
+    /** Event map. */
     private array $events = [];
 
     /** Event target. */
